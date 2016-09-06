@@ -1,0 +1,82 @@
+
+<!doctype html>
+<html>
+<head>
+    <title>nodeBot - v0.0.1</title>
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata:700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="groots.css">
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+</head>
+<body>
+    <div></div>
+    <ul nodebot-console class="is-opened">
+        <div nodebot-toggleConsole class="is-opened">
+            <div class='form-item'>
+                <input type='checkbox' name='toggleConsole' id='toggleConsole' checked>
+                <label for='toggleConsole'>console</label>
+            </div>
+        </div>
+
+
+        <li>nodeBOT v0.0.1 - Welcome</li>
+        <li>------------------------</li>
+    </ul>
+    <ul class="themeBox">
+        <li title="#F2E394" style="background: #F2E394"></li>
+        <li title="#F2AE72" style="background: #F2AE72"></li>
+        <li title="#D96459" style="background: #D96459"></li>
+        <li title="#8C4646" style="background: #8C4646"></li>
+    </ul>
+    <div gr-grid="container">
+        <h1 class="site-title">
+            nodeBOT <span>v</span>0.0.1
+        </h1>
+
+        <hr>
+        <div class="button-container" gr-grid="row">
+            <a href="view-status" class="btn--primary" nodebot-view-status>View status</a>
+            <a href="logout" class="btn--primary" nodebot-logout>Logout</a>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+    var socket = io();
+    $("[nodebot-view-status]").click(function(e) {
+        e.preventDefault();
+        socket.emit('code', 'get-status');
+    });
+
+    $("[nodebot-logout]").click(function(e) {
+        e.preventDefault();
+        socket.emit('user', 'logout');
+        window.location.reload();
+    });
+
+    socket.on('code', function(code){
+        console.log(code.thermometer);
+        // 
+        // log = "nodeBOT STATUS<br>";
+        // log += "Temperature: " + code.thermometer + "<br>";
+        // log += "Humidity: " + code.hygrometer+ "<br><br>";
+
+        $('[nodebot-console]').append($('<li>')
+                              .html(code))
+                              .scrollTop($('[nodebot-console]')[0].scrollHeight);
+    });
+
+
+    $('[nodebot-console]').on('mouseenter mouseleave', function(e) {
+        var toggle = $('#toggleConsole').is(':checked');
+        if (!toggle) {
+            $('[nodebot-console], [nodebot-toggleConsole]').toggleClass("is-opened");
+        }
+    });
+
+
+    </script>
+</body>
+</html>
